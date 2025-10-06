@@ -1,0 +1,45 @@
+package com.example.demo.service;
+
+import com.example.demo.model.Product;
+import com.example.demo.repository.ProductRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class ProductService {
+
+    @Autowired
+    private ProductRepository repository;
+
+    public List<Product> getAll() {
+        return repository.findAll();
+    }
+
+    public Product getProductById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Product not found with id: " + id));
+    }
+
+
+    public Product create(Product product) {
+        return repository.save(product);
+    }
+
+    public List<Product> createBulk(List<Product> products) {
+        return repository.saveAll(products);
+    }
+
+    public Product update(Long id, Product updatedProduct) {
+        Product existing = repository.findById(id).orElseThrow();
+        existing.setName(updatedProduct.getName());
+        existing.setPrice(updatedProduct.getPrice());
+        existing.setQuantity(updatedProduct.getQuantity());
+        return repository.save(existing);
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
+    }
+}
